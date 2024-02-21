@@ -3,15 +3,13 @@ import {
   createConfigOptions,
   createLogger,
   createSubstate,
-  DebuggingInformation,
   Expression,
   Expressions,
   expressions,
   katex,
-  styleDebuggingInformation,
 } from "./deps.ts";
 
-const l = createLogger("LoggerKate");
+const l = createLogger("LoggerKatex");
 const ConfigMacro = l.ConfigMacro;
 export { ConfigMacro as LoggerKatex };
 
