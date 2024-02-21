@@ -161,11 +161,11 @@ export function isDisplayMode(ctx: Context): boolean {
  * Evaluate the children, and then pass them to katex (with `displayMode: false`,
  * and all other options derived from the `ConfigKatex`).
  *
- * @param prefix - Text to be placed before the rendered math such that browsers
+ * @param pre - Text to be placed before the rendered math such that browsers
  * will not insert a line break between this text and the math. This is a
  * workaround for https://github.com/KaTeX/KaTeX/issues/1233
  *
- * @param postfix - Text to be placed after the rendered math such that browsers
+ * @param post - Text to be placed after the rendered math such that browsers
  * will not insert a line break between this text and the math. This is a
  * workaround for https://github.com/KaTeX/KaTeX/issues/1233
  *
@@ -174,16 +174,16 @@ export function isDisplayMode(ctx: Context): boolean {
  * was body text, not math text.
  */
 export function M(
-  { children, prefix, postfix }: {
+  { children, pre, post }: {
     children?: Expressions;
-    prefix?: Expressions;
-    postfix?: Expressions;
+    pre?: Expressions;
+    post?: Expressions;
   },
 ): Expression {
   return (
     <KatexMacro
-      prefix={prefix}
-      postfix={postfix}
+      pre={pre}
+      post={post}
       displayMode={false}
       children={children}
     />
@@ -194,11 +194,11 @@ export function M(
  * Evaluate the children, and then pass them to katex (with `displayMode: true`,
  * and all other options derived from the `ConfigKatex`).
  *
- * @param prefix - Text to be placed before the rendered math such that browsers
+ * @param pre - Text to be placed before the rendered math such that browsers
  * will not insert a line break between this text and the math. This is a
  * workaround for https://github.com/KaTeX/KaTeX/issues/1233
  *
- * @param postfix - Text to be placed after the rendered math such that browsers
+ * @param post - Text to be placed after the rendered math such that browsers
  * will not insert a line break between this text and the math. This is a
  * workaround for https://github.com/KaTeX/KaTeX/issues/1233
  *
@@ -207,16 +207,16 @@ export function M(
  * was body text, not math text.
  */
 export function MM(
-  { children, prefix, postfix }: {
+  { children, pre, post }: {
     children?: Expressions;
-    prefix?: Expressions;
-    postfix?: Expressions;
+    pre?: Expressions;
+    post?: Expressions;
   },
 ): Expression {
   return (
     <KatexMacro
-      prefix={prefix}
-      postfix={postfix}
+      pre={pre}
+      post={post}
       displayMode={true}
       children={children}
     />
@@ -225,11 +225,11 @@ export function MM(
 
 // Shared implementation of the user-facing math macros.
 function KatexMacro(
-  { displayMode, children, prefix, postfix }: {
+  { displayMode, children, pre, post }: {
     displayMode: boolean;
     children?: Expressions;
-    prefix?: Expressions;
-    postfix?: Expressions;
+    pre?: Expressions;
+    post?: Expressions;
   },
 ): Expression {
   let oldState: KatexState = {
@@ -237,25 +237,25 @@ function KatexMacro(
     displayMode: false,
   };
 
-  const prefixExps: Expression[] = prefix
+  const prefixExps: Expression[] = pre
     ? [
       "\\htmlClass{normalText}{\\text{",
-      <fragment exps={expressions(prefix)} />,
+      <fragment exps={expressions(pre)} />,
       "}}",
     ]
     : [];
 
-  const postfixExps: Expression[] = postfix
+  const postfixExps: Expression[] = post
     ? [
       "\\htmlClass{normalText}{\\text{",
-      <fragment exps={expressions(postfix)} />,
+      <fragment exps={expressions(post)} />,
       "}}",
     ]
     : [];
 
   return (
     // Update the `KatexState` for the inner expressions.
-    <lifecycle pre={pre} post={post}>
+    <lifecycle pre={lifecyclePre} post={lifecyclePost}>
       <map fun={map}>
         <fragment
           exps={[...prefixExps, ...expressions(children), ...postfixExps]}
@@ -264,7 +264,7 @@ function KatexMacro(
     </lifecycle>
   );
 
-  function pre(ctx: Context) {
+  function lifecyclePre(ctx: Context) {
     oldState = { ...getState(ctx) };
     const newState: KatexState = {
       inMathMode: oldState.inMathMode === "no" ? "fresh" : "stale",
@@ -275,7 +275,7 @@ function KatexMacro(
     setState(ctx, newState);
   }
 
-  function post(ctx: Context) {
+  function lifecyclePost(ctx: Context) {
     setState(ctx, oldState);
   }
 
