@@ -55,7 +55,7 @@ const [
   ConfigKatex,
 ] = createConfigOptions<KatexConfig, KatexConfig>(
   "ConfigKatex",
-  {
+  () => ({
     output: "html",
     leqno: false,
     fleqn: false,
@@ -69,7 +69,7 @@ const [
     strict: false,
     trust: true,
     globalGroup: false,
-  },
+  }),
   (oldValue, update) => {
     const newValue = { ...oldValue };
     if (update.output !== undefined) {
@@ -137,10 +137,10 @@ type KatexState = {
   displayMode: boolean;
 };
 
-const [getState, setState] = createSubstate<KatexState>({
+const [getState, setState] = createSubstate<KatexState>(() => ({
   inMathMode: "no",
   displayMode: false,
-});
+}));
 
 /**
  * Return true if we are currently evaluating a descendant of a math mode macro.
