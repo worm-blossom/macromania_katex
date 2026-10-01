@@ -1,3 +1,5 @@
+import { Colors } from "./deps.ts";
+import { dependencyCss } from "./deps.ts";
 import {
   Context,
   createConfigOptions,
@@ -13,10 +15,23 @@ const l = createLogger("LoggerKatex");
 const ConfigMacro = l.ConfigMacro;
 export { ConfigMacro as LoggerKatex };
 
+export type KatexConfig = {
+  /**
+   * Asset path to use as an argument to the
+   * [macromania-html-utils](https://github.com/worm-blossom/macromania_html_utils)
+   * `addHtmlDependencyStylesheet` function to add the katex stylesheet
+   */
+  stylesheet?: string[] | null;
+  /**
+   * Katex options.
+   */
+  options?: KatexOptions;
+};
+
 /**
  * Options to pass to katex, see https://katex.org/docs/options for details.
  */
-export type KatexConfig = {
+export type KatexOptions = {
   /**
    * Default is `"html"`, unlike in katex.
    */
@@ -56,61 +71,71 @@ const [
 ] = createConfigOptions<KatexConfig, KatexConfig>(
   "ConfigKatex",
   () => ({
-    output: "html",
-    leqno: false,
-    fleqn: false,
-    haltOnError: true,
-    errorColor: "#cc0000",
-    macros: {},
-    minRuleThickness: undefined,
-    colorIsTextColor: false,
-    maxSize: Infinity,
-    maxExpand: 1000,
-    strict: false,
-    trust: true,
-    globalGroup: false,
+    stylesheet: null,
+    options: {
+      output: "html",
+      leqno: false,
+      fleqn: false,
+      haltOnError: true,
+      errorColor: "#cc0000",
+      macros: {},
+      minRuleThickness: undefined,
+      colorIsTextColor: false,
+      maxSize: Infinity,
+      maxExpand: 1000,
+      strict: false,
+      trust: true,
+      globalGroup: false,
+    },
   }),
   (oldValue, update) => {
     const newValue = { ...oldValue };
-    if (update.output !== undefined) {
-      newValue.output = update.output;
+    if (update.stylesheet !== undefined) {
+      newValue.stylesheet = update.stylesheet;
     }
-    if (update.leqno !== undefined) {
-      newValue.leqno = update.leqno;
+
+    if (update.options !== undefined) {
+      if (update.options.output !== undefined) {
+        newValue.options!.output = update.options.output;
+      }
+      if (update.options.leqno !== undefined) {
+        newValue.options!.leqno = update.options.leqno;
+      }
+      if (update.options.fleqn !== undefined) {
+        newValue.options!.fleqn = update.options.fleqn;
+      }
+      if (update.options.haltOnError !== undefined) {
+        newValue.options!.haltOnError = update.options.haltOnError;
+      }
+      if (update.options.errorColor !== undefined) {
+        newValue.options!.errorColor = update.options.errorColor;
+      }
+      if (update.options.macros !== undefined) {
+        newValue.options!.macros = update.options.macros;
+      }
+      if (update.options.minRuleThickness !== undefined) {
+        newValue.options!.minRuleThickness = update.options.minRuleThickness;
+      }
+      if (update.options.colorIsTextColor !== undefined) {
+        newValue.options!.colorIsTextColor = update.options.colorIsTextColor;
+      }
+      if (update.options.maxSize !== undefined) {
+        newValue.options!.maxSize = update.options.maxSize;
+      }
+      if (update.options.maxExpand !== undefined) {
+        newValue.options!.maxExpand = update.options.maxExpand;
+      }
+      if (update.options.strict !== undefined) {
+        newValue.options!.strict = update.options.strict;
+      }
+      if (update.options.trust !== undefined) {
+        newValue.options!.trust = update.options.trust;
+      }
+      if (update.options.globalGroup !== undefined) {
+        newValue.options!.globalGroup = update.options.globalGroup;
+      }
     }
-    if (update.fleqn !== undefined) {
-      newValue.fleqn = update.fleqn;
-    }
-    if (update.haltOnError !== undefined) {
-      newValue.haltOnError = update.haltOnError;
-    }
-    if (update.errorColor !== undefined) {
-      newValue.errorColor = update.errorColor;
-    }
-    if (update.macros !== undefined) {
-      newValue.macros = update.macros;
-    }
-    if (update.minRuleThickness !== undefined) {
-      newValue.minRuleThickness = update.minRuleThickness;
-    }
-    if (update.colorIsTextColor !== undefined) {
-      newValue.colorIsTextColor = update.colorIsTextColor;
-    }
-    if (update.maxSize !== undefined) {
-      newValue.maxSize = update.maxSize;
-    }
-    if (update.maxExpand !== undefined) {
-      newValue.maxExpand = update.maxExpand;
-    }
-    if (update.strict !== undefined) {
-      newValue.strict = update.strict;
-    }
-    if (update.trust !== undefined) {
-      newValue.trust = update.trust;
-    }
-    if (update.globalGroup !== undefined) {
-      newValue.globalGroup = update.globalGroup;
-    }
+
     return newValue;
   },
 );
@@ -121,7 +146,7 @@ export { ConfigKatex };
  * katex.
  */
 function configToOptions(
-  config: KatexConfig,
+  config: KatexOptions,
   displayMode: boolean,
   // deno-lint-ignore no-explicit-any
 ): Record<string, any> {
@@ -282,10 +307,20 @@ function KatexMacro(
   function map(evaled: string, ctx: Context): Expression {
     const state = getState(ctx);
 
+    const config = getConfig(ctx);
+    if (config.stylesheet !== null) {
+      dependencyCss(ctx, {
+        dep: config.stylesheet!,
+        debugMessage: `Trying to add a katex stylesheet because you used the ${
+          Colors.yellow(displayMode ? `<MM>` : `<M>`)
+        } macro and configured the macromania_katex package to use this path for the depedency.`,
+      });
+    }
+
     if (state.inMathMode === "fresh") {
       // Render `evaled` with katex.
       const config = getConfig(ctx);
-      const opts = configToOptions(config, displayMode);
+      const opts = configToOptions(config.options!, displayMode);
 
       try {
         return katex.default.renderToString(evaled, opts);
