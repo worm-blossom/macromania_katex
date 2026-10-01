@@ -1,6 +1,6 @@
-import { Children, Context, Expression } from "macromania";
+import { type Children, Context, type Expression } from "macromania";
 import { addHtmlDependencyCss } from "macromania-web";
-import { Pathish } from "@wormblossom/simple-fs-abstraction";
+import type { Pathish } from "@wormblossom/simple-fs-abstraction";
 import * as katex from "katex";
 
 export type KatexConfig = {
