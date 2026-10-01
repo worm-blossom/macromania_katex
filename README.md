@@ -20,21 +20,3 @@ Katex has a long-standing [problem with line breaking directly before or after i
 ```
 
 The non-breakable text is in a span with class `normalText`, which should be styled to look like normal body text (rather than the katex `\text` output which is used to render it).
-
-## Configuration
-
-To set the [katex options](https://katex.org/docs/options), use the [macromania-config](https://github.com/worm-blossom/macromania-config) package with the `<ConfigKatex />` macro exported by macromania-katex. It faithfully reproduces [katex options](https://katex.org/docs/options), except for the following differences:
-
-- The katex `throwOnError` option is renamed to `haltOnError` (and halts rather than throwing).
-- The following default values are different:
-  - `output` defaults to `"html"` (in katex, it is `"htmlAndMathml"`),
-  - `strict` defaults to `false` (in katex, it is `true`), and
-  - `trust` defaults to `true` (in katex, it is `false`).
-
-## Package Interoperability
-
-Other packages can query whether evaluation is currently processing the children of a math mode macro with the `isMathMode(ctx: Context) => boolean` function, they can further query for inline vs display mode with the `isDisplayMode(ctx: Context) => boolean` function.
-
-## Caveats
-
-As of now, style sheets and fonts have to be imported manually, and the `normalText` styling has to be applied manually.

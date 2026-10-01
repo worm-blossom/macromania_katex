@@ -1,6 +1,0 @@
-export * from "../macromania/mod.ts";
-export * from "../macromania_config/mod.tsx";
-export * from "../macromania_logger/mod.tsx";
-export * from "../macromania_previews/mod.tsx";
-export * as katex from "npm:katex@0.16.9";
-export * as Colors from "https://deno.land/std@0.204.0/fmt/colors.ts";

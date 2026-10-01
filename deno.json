@@ -2,19 +2,30 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "display": "Deno",
 
+  "name": "@wormblossom/macromania-katex",
+  "version": "0.1.0",
+  "exports": "./mod.tsx",
+
   "imports": {
-    "macromaniajsx/jsx-dev-runtime": "./deps.ts",
-    "macromaniajsx/jsx-runtime": "./deps.ts"
+    "macromania": "jsr:@macromania/macromania@^0.2.3",
+    "macromania-html": "jsr:@macromania/macromania-html@^0.3.6",
+    "macromania-web": "jsr:@wormblossom/macromania-web@^0.2.2",
+    "@wormblossom/macromania-fs": "jsr:@wormblossom/macromania-fs@^0.2.0",
+    "@wormblossom/simple-fs-abstraction": "jsr:@wormblossom/simple-fs-abstraction@^0.1.1",
+    "@wormblossom/simple-fs-deno": "jsr:@wormblossom/simple-fs-deno@^0.1.0",
+    "katex": "npm:katex@0.18.10",
+    "@std/fs": "jsr:@std/fs@^1.0.18",
+    "@std/path": "jsr:@std/path@^1.1.0",
   },
 
   "compilerOptions": {
     "jsx": "react-jsxdev",
-    "jsxImportSource": "macromaniajsx",
+    "jsxImportSource": "macromania",
     "lib": ["deno.ns", "dom"],
     "strict": true
   },
 
   "tasks": {
-    "test": "cd test; deno test -A tests.tsx"
+    "test": "deno test test/tests.tsx"
   }
 }

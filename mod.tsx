@@ -1,27 +1,17 @@
-import { Colors } from "./deps.ts";
-import { dependencyCss } from "./deps.ts";
-import {
-  Context,
-  createConfigOptions,
-  createLogger,
-  createSubstate,
-  Expression,
-  Expressions,
-  expressions,
-  katex,
-} from "./deps.ts";
-
-const l = createLogger("LoggerKatex");
-const ConfigMacro = l.ConfigMacro;
-export { ConfigMacro as LoggerKatex };
+import { Children, Context, Expression } from "macromania";
+import { addHtmlDependencyCss } from "macromania-web";
+import { Pathish } from "@wormblossom/simple-fs-abstraction";
+import * as katex from "katex";
 
 export type KatexConfig = {
   /**
    * Asset path to use as an argument to the
    * [macromania-html-utils](https://github.com/worm-blossom/macromania_html_utils)
-   * `addHtmlDependencyStylesheet` function to add the katex stylesheet
+   * `addHtmlDependencyStylesheet` function to add the katex stylesheet.
+   *
+   * If this is `null`, then no assets are added automatically.
    */
-  stylesheet?: string[] | null;
+  stylesheet?: Pathish | null;
   /**
    * Katex options.
    */
@@ -29,7 +19,7 @@ export type KatexConfig = {
 };
 
 /**
- * Options to pass to katex, see https://katex.org/docs/options for details.
+ * Options to pass to katex, see {@link https://katex.org/docs/options} for details.
  */
 export type KatexOptions = {
   /**
@@ -39,7 +29,7 @@ export type KatexOptions = {
   leqno?: boolean;
   fleqn?: boolean;
   /**
-   * Maps to the `throwOnError` katex option.
+   * Corresponds to the `throwOnError` katex option.
    */
   haltOnError?: boolean;
   errorColor?: string;
@@ -58,88 +48,46 @@ export type KatexOptions = {
   // deno-lint-ignore no-explicit-any
   strict?: boolean | any;
   /**
-   * Defalt is `true`, unlike in katex.
+   * Default is `true`, unlike in katex.
    */
   // deno-lint-ignore no-explicit-any
   trust?: boolean | any;
   globalGroup?: boolean;
 };
 
-const [
-  getConfig,
-  ConfigKatex,
-] = createConfigOptions<KatexConfig, KatexConfig>(
-  "ConfigKatex",
-  () => ({
-    stylesheet: null,
-    options: {
-      output: "html",
-      leqno: false,
-      fleqn: false,
-      haltOnError: true,
-      errorColor: "#cc0000",
-      macros: {},
-      minRuleThickness: undefined,
-      colorIsTextColor: false,
-      maxSize: Infinity,
-      maxExpand: 1000,
-      strict: false,
-      trust: true,
-      globalGroup: false,
+// Do a dance to satisfy the jsr publishing slow-types check.
+const katexPreference: [
+  (
+    props: KatexConfig | {
+      children?: Children;
     },
-  }),
-  (oldValue, update) => {
-    const newValue = { ...oldValue };
-    if (update.stylesheet !== undefined) {
-      newValue.stylesheet = update.stylesheet;
-    }
-
-    if (update.options !== undefined) {
-      if (update.options.output !== undefined) {
-        newValue.options!.output = update.options.output;
-      }
-      if (update.options.leqno !== undefined) {
-        newValue.options!.leqno = update.options.leqno;
-      }
-      if (update.options.fleqn !== undefined) {
-        newValue.options!.fleqn = update.options.fleqn;
-      }
-      if (update.options.haltOnError !== undefined) {
-        newValue.options!.haltOnError = update.options.haltOnError;
-      }
-      if (update.options.errorColor !== undefined) {
-        newValue.options!.errorColor = update.options.errorColor;
-      }
-      if (update.options.macros !== undefined) {
-        newValue.options!.macros = update.options.macros;
-      }
-      if (update.options.minRuleThickness !== undefined) {
-        newValue.options!.minRuleThickness = update.options.minRuleThickness;
-      }
-      if (update.options.colorIsTextColor !== undefined) {
-        newValue.options!.colorIsTextColor = update.options.colorIsTextColor;
-      }
-      if (update.options.maxSize !== undefined) {
-        newValue.options!.maxSize = update.options.maxSize;
-      }
-      if (update.options.maxExpand !== undefined) {
-        newValue.options!.maxExpand = update.options.maxExpand;
-      }
-      if (update.options.strict !== undefined) {
-        newValue.options!.strict = update.options.strict;
-      }
-      if (update.options.trust !== undefined) {
-        newValue.options!.trust = update.options.trust;
-      }
-      if (update.options.globalGroup !== undefined) {
-        newValue.options!.globalGroup = update.options.globalGroup;
-      }
-    }
-
-    return newValue;
+  ) => Expression,
+  (ctx: Context) => Required<KatexConfig>,
+] = Context.createConfig<KatexConfig>(() => ({
+  stylesheet: null,
+  options: {
+    output: "html",
+    leqno: false,
+    fleqn: false,
+    haltOnError: true,
+    errorColor: "#cc0000",
+    macros: {},
+    minRuleThickness: undefined,
+    colorIsTextColor: false,
+    maxSize: Infinity,
+    maxExpand: 1000,
+    strict: false,
+    trust: true,
+    globalGroup: false,
   },
-);
-export { ConfigKatex };
+}));
+const ConfigKatex_ = katexPreference[0];
+const getConfig = katexPreference[1];
+
+/**
+ * The config macro for katex.
+ */
+export const ConfigKatex = ConfigKatex_;
 
 /**
  * Map a `KatexConfig` and a display mode to options that can be passed to
@@ -156,16 +104,6 @@ function configToOptions(
   opts.throwOnError = config.haltOnError;
   return opts;
 }
-
-type KatexState = {
-  inMathMode: "no" | "fresh" | "stale";
-  displayMode: boolean;
-};
-
-const [getState, setState] = createSubstate<KatexState>(() => ({
-  inMathMode: "no",
-  displayMode: false,
-}));
 
 /**
  * Return true if we are currently evaluating a descendant of a math mode macro.
@@ -200,9 +138,9 @@ export function isDisplayMode(ctx: Context): boolean {
  */
 export function M(
   { children, pre, post }: {
-    children?: Expressions;
-    pre?: Expressions;
-    post?: Expressions;
+    children?: Children;
+    pre?: Expression;
+    post?: Expression;
   },
 ): Expression {
   return (
@@ -210,8 +148,9 @@ export function M(
       pre={pre}
       post={post}
       displayMode={false}
-      children={children}
-    />
+    >
+      <xs x={children} />
+    </KatexMacro>
   );
 }
 
@@ -233,39 +172,60 @@ export function M(
  */
 export function MM(
   { children, pre, post }: {
-    children?: Expressions;
-    pre?: Expressions;
-    post?: Expressions;
+    children?: Children;
+    pre?: Expression;
+    post?: Expression;
   },
 ): Expression {
   return (
     <KatexMacro
       pre={pre}
       post={post}
-      displayMode={true}
-      children={children}
-    />
+      displayMode
+    >
+      <xs x={children} />
+    </KatexMacro>
   );
 }
+
+type KatexState = {
+  inMathMode: "no" | "fresh" | "stale";
+  displayMode: boolean;
+};
+
+const [StateScope, getState, _setState] = Context.createScopedState<KatexState>(
+  (
+    parentState,
+  ) => {
+    if (parentState === undefined) {
+      return {
+        inMathMode: "no",
+        displayMode: false,
+      };
+    } else {
+      return {
+        inMathMode: parentState.inMathMode === "no" ? "fresh" : "stale",
+        displayMode: parentState.inMathMode === "no"
+          ? false
+          : parentState.displayMode,
+      };
+    }
+  },
+);
 
 // Shared implementation of the user-facing math macros.
 function KatexMacro(
   { displayMode, children, pre, post }: {
     displayMode: boolean;
-    children?: Expressions;
-    pre?: Expressions;
-    post?: Expressions;
+    children?: Children;
+    pre?: Expression;
+    post?: Expression;
   },
 ): Expression {
-  let oldState: KatexState = {
-    inMathMode: "no",
-    displayMode: false,
-  };
-
   const prefixExps: Expression[] = pre
     ? [
       "\\htmlClass{normalText}{\\text{",
-      <fragment exps={expressions(pre)} />,
+      pre,
       "}}",
     ]
     : [];
@@ -273,67 +233,87 @@ function KatexMacro(
   const postfixExps: Expression[] = post
     ? [
       "\\htmlClass{normalText}{\\text{",
-      <fragment exps={expressions(post)} />,
+      post,
       "}}",
     ]
     : [];
 
   return (
-    // Update the `KatexState` for the inner expressions.
-    <lifecycle pre={lifecyclePre} post={lifecyclePost}>
-      <map fun={map}>
-        <fragment
-          exps={[...prefixExps, ...expressions(children), ...postfixExps]}
-        />
-      </map>
-    </lifecycle>
+    <effect
+      fun={(ctx) => {
+        const parentState = getState(ctx);
+        if (
+          (parentState.inMathMode !== "no") && !parentState.displayMode &&
+          displayMode
+        ) {
+          ctx.warn(
+            `Attempting to output katex in display mode within a non-displaymode katex macro. This is probably a bad idea.`,
+          );
+        }
+
+        return (
+          <StateScope>
+            <effect
+              fun={(ctx) => {
+                if (displayMode) {
+                  getState(ctx).displayMode = displayMode;
+                }
+
+                return (
+                  <map
+                    fun={(ctx, evaled) => {
+                      const state = getState(ctx);
+
+                      const config = getConfig(ctx);
+
+                      if (config.stylesheet !== null) {
+                        addHtmlDependencyCss(ctx, {
+                          path: config.stylesheet,
+                          logDebugMessage: (ctx: Context) => {
+                            ctx.warn(
+                              `Trying to add a katex stylesheet because you used the ${
+                                ctx.fmtCode(displayMode ? `<MM>` : `<M>`)
+                              } macro and configured the ${
+                                ctx.fmtCode("macromania-katex")
+                              } package to use this asset path for the katex stylesheet.`,
+                            );
+                          },
+                        });
+                      }
+
+                      if (state.inMathMode === "fresh") {
+                        // Render `evaled` with katex.
+                        const config = getConfig(ctx);
+                        const opts = configToOptions(
+                          config.options!,
+                          displayMode,
+                        );
+
+                        try {
+                          return katex.default.renderToString(evaled, opts);
+                        } catch (err) {
+                          ctx.error(`Failed to render katex:`);
+                          ctx.error(err);
+                          ctx.error(`The input that was given to katex:`);
+                          ctx.error(evaled);
+                          return ctx.halt();
+                        }
+                      } else {
+                        // An outer math macro will do the rendering.
+                        return evaled;
+                      }
+                    }}
+                  >
+                    <xs x={prefixExps} />
+                    <xs x={children} />
+                    <xs x={postfixExps} />
+                  </map>
+                );
+              }}
+            />
+          </StateScope>
+        );
+      }}
+    />
   );
-
-  function lifecyclePre(ctx: Context) {
-    oldState = { ...getState(ctx) };
-    const newState: KatexState = {
-      inMathMode: oldState.inMathMode === "no" ? "fresh" : "stale",
-      displayMode: oldState.inMathMode === "no"
-        ? displayMode
-        : oldState.displayMode,
-    };
-    setState(ctx, newState);
-  }
-
-  function lifecyclePost(ctx: Context) {
-    setState(ctx, oldState);
-  }
-
-  function map(evaled: string, ctx: Context): Expression {
-    const state = getState(ctx);
-
-    const config = getConfig(ctx);
-    if (config.stylesheet !== null) {
-      dependencyCss(ctx, {
-        dep: config.stylesheet!,
-        debugMessage: `Trying to add a katex stylesheet because you used the ${
-          Colors.yellow(displayMode ? `<MM>` : `<M>`)
-        } macro and configured the macromania_katex package to use this path for the depedency.`,
-      });
-    }
-
-    if (state.inMathMode === "fresh") {
-      // Render `evaled` with katex.
-      const config = getConfig(ctx);
-      const opts = configToOptions(config.options!, displayMode);
-
-      try {
-        return katex.default.renderToString(evaled, opts);
-      } catch (err) {
-        l.error(ctx, "Failed to render katex:");
-        l.error(ctx, err);
-        l.error(ctx, "The input that was given to katex:");
-        l.error(ctx, evaled);
-        return ctx.halt();
-      }
-    } else {
-      // An outer math macro will do the rendering.
-      return evaled;
-    }
-  }
 }

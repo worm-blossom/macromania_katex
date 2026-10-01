@@ -1,0 +1,110 @@
+{
+  "version": "5",
+  "specifiers": {
+    "jsr:@macromania/macromania-html@~0.3.6": "0.3.6",
+    "jsr:@macromania/macromania@0.2": "0.2.3",
+    "jsr:@macromania/macromania@~0.2.3": "0.2.3",
+    "jsr:@std/fmt@^1.0.8": "1.0.10",
+    "jsr:@std/fs@^1.0.18": "1.0.24",
+    "jsr:@std/internal@^1.0.14": "1.0.14",
+    "jsr:@std/path@^1.1.0": "1.1.6",
+    "jsr:@std/path@^1.1.5": "1.1.6",
+    "jsr:@wormblossom/macromania-fs@0.2": "0.2.0",
+    "jsr:@wormblossom/macromania-web@~0.2.2": "0.2.2",
+    "jsr:@wormblossom/simple-fs-abstraction@0.1": "0.1.1",
+    "jsr:@wormblossom/simple-fs-abstraction@~0.1.1": "0.1.1",
+    "jsr:@wormblossom/simple-fs-deno@0.1": "0.1.0",
+    "npm:katex@0.18.10": "0.18.10"
+  },
+  "jsr": {
+    "@macromania/macromania@0.2.3": {
+      "integrity": "5bae0b6a4cbd926aebf25fd236e77356558f9fd9aa3915153fc6917311ebecef",
+      "dependencies": [
+        "jsr:@std/fmt"
+      ]
+    },
+    "@macromania/macromania-html@0.3.6": {
+      "integrity": "361b366b91612a25b5b0f491a8ef2edfb530a266ee4e2687b928b8a994e49660",
+      "dependencies": [
+        "jsr:@macromania/macromania@~0.2.3"
+      ]
+    },
+    "@std/fmt@1.0.10": {
+      "integrity": "90dfba288802ac6de82fb31d0917eb9e4450b9925b954d5e51fc29ac07419db5"
+    },
+    "@std/fs@1.0.24": {
+      "integrity": "f3061b45b81673a2bece689da041df32d174be064c89eb6397fb5718d3fb7877",
+      "dependencies": [
+        "jsr:@std/internal",
+        "jsr:@std/path@^1.1.5"
+      ]
+    },
+    "@std/internal@1.0.14": {
+      "integrity": "291516b3d4c35024d6ffbc0a9df5bf4c64116e05b50012cf846710152d2ffdf7"
+    },
+    "@std/path@1.1.6": {
+      "integrity": "c68485c2a4dfbb5ae3cc74fae4e8c4e5d874cf8a8ed12927917235c758b46cbe",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@wormblossom/macromania-fs@0.2.0": {
+      "integrity": "a01d8e10f5c9398938ff561061915419fee9c12efd1e99bfb1947b6948fda9a0",
+      "dependencies": [
+        "jsr:@macromania/macromania@0.2",
+        "jsr:@wormblossom/simple-fs-abstraction@0.1"
+      ]
+    },
+    "@wormblossom/macromania-web@0.2.2": {
+      "integrity": "2cbd39902de49f64f77a99b32a562990c3ca43eca20bd970597af394d45e0a98",
+      "dependencies": [
+        "jsr:@macromania/macromania-html",
+        "jsr:@macromania/macromania@~0.2.3",
+        "jsr:@std/fs",
+        "jsr:@std/path@^1.1.0",
+        "jsr:@wormblossom/macromania-fs",
+        "jsr:@wormblossom/simple-fs-abstraction@~0.1.1",
+        "jsr:@wormblossom/simple-fs-deno"
+      ]
+    },
+    "@wormblossom/simple-fs-abstraction@0.1.1": {
+      "integrity": "ecb66d498eba92771d1974c3cca945b8d180f0e511c02d9b98d639084b06ab19",
+      "dependencies": [
+        "jsr:@std/path@^1.1.0"
+      ]
+    },
+    "@wormblossom/simple-fs-deno@0.1.0": {
+      "integrity": "d119df364193eb2b8af92524c23b386d6cf2f4a6823768e18815d5246ea15ac9",
+      "dependencies": [
+        "jsr:@std/fs",
+        "jsr:@std/path@^1.1.0",
+        "jsr:@wormblossom/simple-fs-abstraction@0.1"
+      ]
+    }
+  },
+  "npm": {
+    "commander@15.0.0": {
+      "integrity": "sha512-z67u4ZhzCL/Tydu1lJARtEZYWbWaN7oYLHbsuzocr6y4N6WZAagG3RQ4FW61V1/0+jImpj293XfrcYnd1qxtPg=="
+    },
+    "katex@0.18.10": {
+      "integrity": "sha512-/B6p9eY9DX7aHBfpkHdpirDTZ5QH9xTwL9y837PWuzuv41O5jFdqNQwVQEQsimY0/iVNkwBY4+4hMfhQ7d4Dbw==",
+      "dependencies": [
+        "commander"
+      ],
+      "bin": true
+    }
+  },
+  "workspace": {
+    "dependencies": [
+      "jsr:@macromania/macromania-html@~0.3.6",
+      "jsr:@macromania/macromania@~0.2.3",
+      "jsr:@std/fs@^1.0.18",
+      "jsr:@std/path@^1.1.0",
+      "jsr:@wormblossom/macromania-fs@0.2",
+      "jsr:@wormblossom/macromania-web@~0.2.2",
+      "jsr:@wormblossom/simple-fs-abstraction@~0.1.1",
+      "jsr:@wormblossom/simple-fs-deno@0.1",
+      "npm:katex@0.18.10"
+    ]
+  }
+}
