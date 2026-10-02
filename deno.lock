@@ -10,7 +10,7 @@
     "jsr:@std/path@^1.1.0": "1.1.6",
     "jsr:@std/path@^1.1.5": "1.1.6",
     "jsr:@wormblossom/macromania-fs@0.2": "0.2.0",
-    "jsr:@wormblossom/macromania-web@~0.2.2": "0.2.2",
+    "jsr:@wormblossom/macromania-web@~0.3.1": "0.3.1",
     "jsr:@wormblossom/simple-fs-abstraction@0.1": "0.1.1",
     "jsr:@wormblossom/simple-fs-abstraction@~0.1.1": "0.1.1",
     "jsr:@wormblossom/simple-fs-deno@0.1": "0.1.0",
@@ -55,8 +55,8 @@
         "jsr:@wormblossom/simple-fs-abstraction@0.1"
       ]
     },
-    "@wormblossom/macromania-web@0.2.2": {
-      "integrity": "2cbd39902de49f64f77a99b32a562990c3ca43eca20bd970597af394d45e0a98",
+    "@wormblossom/macromania-web@0.3.1": {
+      "integrity": "07b65cde176e3bdef6d36024597033c32adacfc9b91a525dc36695fa5fef18ea",
       "dependencies": [
         "jsr:@macromania/macromania-html",
         "jsr:@macromania/macromania@~0.2.3",
@@ -101,8 +101,7 @@
       "jsr:@std/fs@^1.0.18",
       "jsr:@std/path@^1.1.0",
       "jsr:@wormblossom/macromania-fs@0.2",
-      "jsr:@wormblossom/macromania-web@~0.2.2",
-      "jsr:@wormblossom/simple-fs-abstraction@~0.1.1",
+      "jsr:@wormblossom/macromania-web@~0.3.1",
       "jsr:@wormblossom/simple-fs-deno@0.1",
       "npm:katex@0.18.10"
     ]

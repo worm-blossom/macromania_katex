@@ -7,7 +7,7 @@ import { Html5 } from "macromania-web";
 import { ServerRoot } from "macromania-web";
 import { dynamicKatexAssets } from "../vals.ts";
 
-import { ConfigKatex, M, MM } from "../mod.tsx";
+import { ConfigKatex, M } from "../mod.tsx";
 
 const exp = (
   <ConfigFs fs={new SimpleFsDeno(".")}>
@@ -17,7 +17,7 @@ const exp = (
           input="assets"
           output="assetsOut"
           dynamicAssets={[
-            ...dynamicKatexAssets("katex_assets"),
+            ...dynamicKatexAssets("/katex_assets"),
           ]}
           transformations={[
             ["/katex_assets/fonts", ASSET_COPY, "ignore"],

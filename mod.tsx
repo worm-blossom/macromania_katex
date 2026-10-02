@@ -1,18 +1,17 @@
 import { type Children, Context, type Expression } from "macromania";
-import { addHtmlDependencyCss } from "macromania-web";
-import type { Pathish } from "@wormblossom/simple-fs-abstraction";
+import { addHtmlDependencyCss, type UrlRefish } from "macromania-web";
 import * as katex from "katex";
 
 export { dynamicKatexAssets } from "./vals.ts";
 
 export type KatexConfig = {
   /**
-   * Asset path to use as an argument to the
+   * Asset UrlRef to use as an argument to the
    * macromania-web `addHtmlDependencyCss` function to add the katex stylesheet.
    *
    * If this is `null`, then no assets are added automatically.
    */
-  stylesheet?: Pathish | null;
+  stylesheet?: UrlRefish | null;
   /**
    * Katex options.
    */

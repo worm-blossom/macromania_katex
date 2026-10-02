@@ -3,15 +3,14 @@
   "display": "Deno",
 
   "name": "@wormblossom/macromania-katex",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "exports": "./mod.tsx",
 
   "imports": {
     "macromania": "jsr:@macromania/macromania@^0.2.3",
     "macromania-html": "jsr:@macromania/macromania-html@^0.3.6",
-    "macromania-web": "jsr:@wormblossom/macromania-web@^0.2.2",
+    "macromania-web": "jsr:@wormblossom/macromania-web@^0.3.1",
     "@wormblossom/macromania-fs": "jsr:@wormblossom/macromania-fs@^0.2.0",
-    "@wormblossom/simple-fs-abstraction": "jsr:@wormblossom/simple-fs-abstraction@^0.1.1",
     "@wormblossom/simple-fs-deno": "jsr:@wormblossom/simple-fs-deno@^0.1.0",
     "katex": "npm:katex@0.18.10",
     "@std/fs": "jsr:@std/fs@^1.0.18",
