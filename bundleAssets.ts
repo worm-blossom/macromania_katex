@@ -63,6 +63,11 @@ outPaths.forEach(async (path, i) => {
 });
 await writer.write(encoder.encode(`];
 
+/**
+ * Creates an array of dynamic assets, suitable for the \`dynamicAssets\` prop of the
+ * \`<Assets>\` macro of \`macromania-web\`. The \`prefix\` is prepended to the path of
+ * each of the assets.
+ */
 export function dynamicKatexAssets(prefix: string): Array<[string, Uint8Array]> {
     return vals.map((val) => [prefix + "/" + val[0], val[1]]);
 }`));

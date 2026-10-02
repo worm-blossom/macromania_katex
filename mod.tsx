@@ -3,11 +3,12 @@ import { addHtmlDependencyCss } from "macromania-web";
 import type { Pathish } from "@wormblossom/simple-fs-abstraction";
 import * as katex from "katex";
 
+export { dynamicKatexAssets } from "./vals.ts";
+
 export type KatexConfig = {
   /**
    * Asset path to use as an argument to the
-   * [macromania-html-utils](https://github.com/worm-blossom/macromania_html_utils)
-   * `addHtmlDependencyStylesheet` function to add the katex stylesheet.
+   * macromania-web `addHtmlDependencyCss` function to add the katex stylesheet.
    *
    * If this is `null`, then no assets are added automatically.
    */
@@ -122,7 +123,7 @@ export function isDisplayMode(ctx: Context): boolean {
 
 /**
  * Evaluate the children, and then pass them to katex (with `displayMode: false`,
- * and all other options derived from the `ConfigKatex`).
+ * and all other options derived from the surrounding `<ConfigKatex>` macro(s)).
  *
  * @param pre - Text to be placed before the rendered math such that browsers
  * will not insert a line break between this text and the math. This is a
@@ -156,7 +157,7 @@ export function M(
 
 /**
  * Evaluate the children, and then pass them to katex (with `displayMode: true`,
- * and all other options derived from the `ConfigKatex`).
+ * and all other options derived from the surrounding `<ConfigKatex>` macro(s)).
  *
  * @param pre - Text to be placed before the rendered math such that browsers
  * will not insert a line break between this text and the math. This is a

@@ -123,6 +123,11 @@ const vals: Array<[string, Uint8Array]> = [["fonts/KaTeX_AMS-Regular.ttf", val0]
 ["katex.min.css", val60],
 ];
 
+/**
+ * Creates an array of dynamic assets, suitable for the `dynamicAssets` prop of the
+ * `<Assets>` macro of `macromania-web`. The `prefix` is prepended to the path of
+ * each of the assets.
+ */
 export function dynamicKatexAssets(prefix: string): Array<[string, Uint8Array]> {
     return vals.map((val) => [prefix + "/" + val[0], val[1]]);
 }
